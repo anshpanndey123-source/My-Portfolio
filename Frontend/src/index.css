@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* ⭐ stars move */
+@keyframes starsMove {
+  from { background-position: 0 0; }
+  to { background-position: -2000px 2000px; }
+}
+.animate-stars {
+  animation: starsMove 200s linear infinite;
+}
+
+/* 🌀 orbit */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spinSlow 45s linear infinite;
+  will-change: transform;
+}
