@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   /* ================= FETCH MESSAGES ================= */
   const fetchMessages = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/messages", {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/messages`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessages(res.data);
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
   /* ================= FETCH ANALYTICS ================= */
   const fetchAnalytics = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/analytics", {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/analytics`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStats(res.data);
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
     if (!window.confirm("Delete this message?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/admin/messages/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_BASE_URL}/admin/messages/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMessages(messages.filter((m) => m._id !== id));

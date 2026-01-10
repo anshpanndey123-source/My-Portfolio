@@ -10,7 +10,7 @@ export default function AdminLogin() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/login", form);
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin/login`, form);
       localStorage.setItem("adminToken", res.data.token);
       navigate("/admin");
     } catch {

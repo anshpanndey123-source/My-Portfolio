@@ -32,7 +32,7 @@ export default function Contact() {
     setStatus({ type: "", msg: "" });
 
     try {
-      const res = await axios.post("http://localhost:5000/api/contact", form);
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/contact`, form);
 
       setStatus({ type: "success", msg: res.data.msg || "Message sent successfully 🚀" });
       setForm({ name: "", email: "", subject: "", message: "" });

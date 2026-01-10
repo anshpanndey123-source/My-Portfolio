@@ -13,7 +13,7 @@ export default function ChangePassword() {
 
     try {
       await axios.put(
-        "http://localhost:5000/api/admin/change-password",
+        `${import.meta.env.VITE_BASE_URL}/admin/change-password`,
         form,
         {
           headers: {
