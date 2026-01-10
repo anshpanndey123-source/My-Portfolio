@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { FaCode, FaLaptopCode, FaRocket, FaStar } from "react-icons/fa";
+import AboutImage from "../../public/Images/About_Image.jpeg";
+import MyResume from "../../public/Images/My_Resume_Original.pdf";
 
 const stats = [
   { icon: <FaCode />, value: "10+", label: "Projects" },
@@ -65,7 +67,7 @@ export default function About() {
               shadow-[0_0_50px_#7c3aed66]"
             >
               {/* 👉 Replace with your real image */}
-              <img src="../public/Images/About_Image.jpeg" className="w-full h-full object-cover" />
+              <img src={AboutImage} className="w-full h-full object-cover" />
 
               {/* <span className="text-6xl font-extrabold bg-gradient-to-r 
                 from-purple-400 to-cyan-400 bg-clip-text text-transparent">
@@ -133,7 +135,7 @@ export default function About() {
           {/* BUTTONS */}
           <div className="flex gap-4 mt-12 flex-wrap">
             <a
-              href="../src/Images/My_Resume_Original.pdf"
+              href={MyResume}
               target="_blank"
               className="px-7 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 
                 shadow-[0_0_30px_#7c3aed] hover:scale-110 transition"
