@@ -5,18 +5,26 @@ import Admin from "../models/Admin.js";
 
 dotenv.config();
 
-mongoose.connect(process.env.MONGO_URI);
+const run = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
 
-const createAdmin = async () => {
-  const hashed = await bcrypt.hash("admin123", 10);
+    // ⚠ purane admins delete (optional but recommended)
+    await Admin.deleteMany();
 
-  await Admin.create({
-    email: "admin@portfolio.com",
-    password: hashed,
-  });
+    const hashed = await bcrypt.hash("admin123", 10);
 
-  console.log("✅ Admin created");
-  process.exit();
+    await Admin.create({
+      email: "admin@portfolio.com",
+      password: hashed,
+    });
+
+    console.log("✅ Fresh admin created");
+    process.exit();
+  } catch (err) {
+    console.log("❌ Admin create error:", err.message);
+    process.exit(1);
+  }
 };
 
-createAdmin();
+run();
