@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
 import { FaCode, FaLaptopCode, FaRocket, FaStar } from "react-icons/fa";
-import AboutImage from "../../public/Images/About_Image.jpeg";
-import MyResume from "../../public/Images/My_Resume_Original.pdf";
 
 const stats = [
   { icon: <FaCode />, value: "10+", label: "Projects" },
@@ -10,13 +10,21 @@ const stats = [
 ];
 
 export default function About() {
+  const [about, setAbout] = useState(null);
+  const BASE = import.meta.env.VITE_BASE_URL;
+
+  useEffect(() => {
+    axios.get(`${BASE}/about`).then((res) => {
+      console.log("ABOUT DATA:", res.data);
+      setAbout(res.data);
+    });
+  }, []);
+
   return (
     <section id="about" className="relative min-h-screen text-white overflow-hidden py-32 mt-10">
-
-      {/* ================= CONTENT ================= */}
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-20 items-center">
 
-        {/* 👤 LEFT – LAYERED PROFILE (ALIVE) */}
+        {/* ================= IMAGE ================= */}
         <motion.div
           initial={{ opacity: 0, x: -60, scale: 0.8 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
@@ -24,70 +32,35 @@ export default function About() {
           viewport={{ once: true }}
           className="relative flex justify-center md:justify-start"
         >
-          {/* floating wrapper */}
-          <motion.div
-            animate={{
-              y: [0, -12, 8, -6, 0],
-              rotate: [0, -1.5, 1.5, -1, 0],
-              scale: [1, 1.02, 0.98, 1.01, 1],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="relative"
+          <div
+            className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-[2rem]
+            backdrop-blur-xl bg-white/5 border border-white/10 
+            flex items-center justify-center overflow-hidden
+            shadow-[0_0_50px_#7c3aed66]"
           >
-            {/* ghost card */}
-            <motion.div
-              animate={{
-                y: [0, 20, -10, 0],
-                rotate: [-8, -5, -10, -8],
-              }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-10 -top-10 w-72 h-80 sm:w-80 sm:h-96 
-              rounded-[2rem] bg-gradient-to-br from-purple-500/30 to-cyan-400/20 
-              blur-xl opacity-60"
-            />
-
-            {/* glow */}
-            <motion.div
-              animate={{ opacity: [0.3, 0.6, 0.35] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -inset-2 rounded-[2rem] bg-gradient-to-r 
-              from-purple-500 via-fuchsia-500 to-cyan-400 blur-2xl"
-            />
-
-            {/* main card */}
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 1 }}
-              className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-[2rem]
-              backdrop-blur-xl bg-white/5 border border-white/10 
-              flex items-center justify-center overflow-hidden
-              shadow-[0_0_50px_#7c3aed66]"
-            >
-              {/* 👉 Replace with your real image */}
-              <img src={AboutImage} className="w-full h-full object-cover" />
-
-              {/* <span className="text-6xl font-extrabold bg-gradient-to-r 
-                from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                ANSH
-              </span> */}
-            </motion.div>
-          </motion.div>
+            {about?.image && (
+              <img
+                src={about.image}
+                alt="About"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            )}
+          </div>
         </motion.div>
 
-        {/* 🧠 RIGHT – CONTENT */}
+        {/* ================= CONTENT ================= */}
         <motion.div
           initial={{ opacity: 0, x: 80 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
           viewport={{ once: true }}
         >
-
-          <span className="inline-block px-4 py-1 mb-5 rounded-full 
+          <span
+            className="inline-block px-4 py-1 mb-5 rounded-full 
             bg-purple-500/10 border border-purple-400/30 
-            text-purple-300 text-sm">
+            text-purple-300 text-sm"
+          >
             👋 About Me
           </span>
 
@@ -99,8 +72,10 @@ export default function About() {
           </h2>
 
           <p className="mt-6 text-gray-400 leading-relaxed max-w-xl">
-            I’m a passionate <span className="text-purple-400 font-semibold">Full Stack Developer</span> who designs and
-            builds ultra-modern, high-performance web applications with strong focus on UI, UX and scalability.
+            I’m a passionate{" "}
+            <span className="text-purple-400 font-semibold">Full Stack Developer</span>{" "}
+            who designs and builds ultra-modern, high-performance web applications
+            with strong focus on UI, UX and scalability.
           </p>
 
           {/* DIFFERENT */}
@@ -109,8 +84,9 @@ export default function About() {
               <FaStar /> What makes me different
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              I don’t just write code — I craft premium experiences. I deeply care about design,
-              animations, performance and building products people love to use.
+              I don’t just write code — I craft premium experiences. I deeply care
+              about design, animations, performance and building products people
+              love to use.
             </p>
           </div>
 
@@ -121,7 +97,7 @@ export default function About() {
                 key={i}
                 whileHover={{ scale: 1.1 }}
                 className="rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 
-                  p-4 text-center shadow-[0_0_20px_#7c3aed55]"
+                p-4 text-center shadow-[0_0_20px_#7c3aed55]"
               >
                 <div className="text-purple-400 text-2xl mb-2 flex justify-center">
                   {s.icon}
@@ -134,24 +110,27 @@ export default function About() {
 
           {/* BUTTONS */}
           <div className="flex gap-4 mt-12 flex-wrap">
-            <a
-              href={MyResume}
-              target="_blank"
-              className="px-7 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 
-                shadow-[0_0_30px_#7c3aed] hover:scale-110 transition"
-            >
-              Download Resume
-            </a>
+            {about?.resume && (
+          <a
+            href={`${BASE}/download-resume`}
+            className="px-7 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 
+            shadow-[0_0_30px_#7c3aed] hover:scale-110 transition"
+          >
+            Download Resume
+          </a>
 
-            <a
-               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            )}
+
+            <button
+              onClick={() =>
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+              }
               className="px-7 py-3 rounded-xl border border-white/10 
-                hover:border-purple-400 hover:text-purple-400 transition"
+              hover:border-purple-400 hover:text-purple-400 transition"
             >
               Contact Me
-            </a>
+            </button>
           </div>
-
         </motion.div>
       </div>
     </section>

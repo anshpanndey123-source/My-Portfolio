@@ -6,6 +6,8 @@ import cors from "cors";
 import transporter from "./config/email.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import aboutRoutes from "./routes/aboutRoutes.js";
 
 dotenv.config();
 
@@ -15,6 +17,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api", adminRoutes);
+app.use("/api", projectRoutes);
+app.use("/api", aboutRoutes);
+
 
 /* ================= BASIC TEST ROUTE ================= */
 app.get("/", (req, res) => {
