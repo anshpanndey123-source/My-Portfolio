@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
+import connectDB from "./config/db.js";
 
 import transporter from "./config/email.js";
 import contactRoutes from "./routes/contactRoutes.js";
@@ -16,6 +17,9 @@ const app = express();
 /* ================= MIDDLEWARE ================= */
 app.use(cors());
 app.use(express.json());
+connectDB();
+
+/* ================= ROUTES ================= */
 app.use("/api", adminRoutes);
 app.use("/api", projectRoutes);
 app.use("/api", aboutRoutes);
