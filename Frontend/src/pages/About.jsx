@@ -24,30 +24,55 @@ export default function About() {
     <section id="about" className="relative min-h-screen text-white overflow-hidden py-32 mt-10">
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-20 items-center">
 
-        {/* ================= IMAGE ================= */}
-        <motion.div
-          initial={{ opacity: 0, x: -60, scale: 0.8 }}
-          whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          className="relative flex justify-center md:justify-start"
-        >
-          <div
-            className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-[2rem]
-            backdrop-blur-xl bg-white/5 border border-white/10 
-            flex items-center justify-center overflow-hidden
-            shadow-[0_0_50px_#7c3aed66]"
-          >
-            {about?.image && (
-              <img
-                src={about.image}
-                alt="About"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            )}
-          </div>
-        </motion.div>
+{/* ================= IMAGE ================= */}
+<motion.div
+  initial={{ opacity: 0, x: -60, scale: 0.8 }}
+  whileInView={{ opacity: 1, x: 0, scale: 1 }}
+  transition={{ duration: 1 }}
+  viewport={{ once: true }}
+  className="relative flex justify-center md:justify-start"
+>
+  {/* 🔁 PERMANENT FLOATING WRAPPER */}
+  <motion.div
+    animate={{
+      y: [0, -14, 10, -8, 0],
+      rotate: [0, -1.5, 1.5, -1, 0],
+      scale: [1, 1.02, 0.98, 1.01, 1],
+    }}
+    transition={{
+      duration: 10,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+    className="relative"
+  >
+    {/* GLOW */}
+    <motion.div
+      animate={{ opacity: [0.3, 0.6, 0.35] }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute -inset-3 rounded-[2rem] 
+      bg-gradient-to-r from-purple-500 via-fuchsia-500 to-cyan-400 blur-2xl"
+    />
+
+    {/* IMAGE CARD */}
+    <div
+      className="relative w-72 h-80 sm:w-80 sm:h-96 rounded-[2rem]
+      backdrop-blur-xl bg-white/5 border border-white/10 
+      flex items-center justify-center overflow-hidden
+      shadow-[0_0_50px_#7c3aed66]"
+    >
+      {about?.image && (
+        <img
+          src={about.image}
+          alt="About"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      )}
+    </div>
+  </motion.div>
+</motion.div>
+
 
         {/* ================= CONTENT ================= */}
         <motion.div

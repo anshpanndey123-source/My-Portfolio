@@ -20,6 +20,9 @@ export default function AdminDashboard() {
   const [aboutImage, setAboutImage] = useState(null);
   const [resume, setResume] = useState(null);
   const [aboutData, setAboutData] = useState(null);
+  const [aboutUploading, setAboutUploading] = useState(false);
+  const [resumeUploading, setResumeUploading] = useState(false);
+
 
   const [form, setForm] = useState({
     title: "", category: "", description: "", tech: "", liveLink: "", githubLink: "",
@@ -87,21 +90,34 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!aboutImage) return alert("Select image");
 
-    const data = new FormData();
-    data.append("image", aboutImage);
+    try {
+      setAboutUploading(true);
 
-    await axios.post(`${BASE}/admin/about/image`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      const data = new FormData();
+      data.append("image", aboutImage);
 
-    setAboutImage(null);
-    fetchAbout();
-    alert("✅ About image updated");
+      await axios.post(`${BASE}/admin/about/image`, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setAboutImage(null);
+      fetchAbout();
+      alert("✅ About image updated");
+
+    } catch (err) {
+      alert("❌ Image upload failed");
+    } finally {
+      setAboutUploading(false);
+    }
   };
 
+
   const uploadResume = async (e) => {
-    e.preventDefault();
-    if (!resume) return alert("Select resume");
+  e.preventDefault();
+  if (!resume) return alert("Select resume");
+
+  try {
+    setResumeUploading(true);
 
     const data = new FormData();
     data.append("resume", resume);
@@ -113,7 +129,14 @@ export default function AdminDashboard() {
     setResume(null);
     fetchAbout();
     alert("✅ Resume updated");
-  };
+
+  } catch (err) {
+    alert("❌ Resume upload failed");
+  } finally {
+    setResumeUploading(false);
+  }
+};
+
 
   /* ---------------- PROJECTS ---------------- */
 
@@ -171,37 +194,75 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-[#050510] via-[#0a0a20] to-black text-white">
 
       {/* NAVBAR */}
-      <div className="sticky top-0 z-50 bg-black/50 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex justify-between items-center">
+{/* ================= NAVBAR ================= */}
+<div className="sticky top-0 z-50 bg-black/70 backdrop-blur-xl border-b border-white/10">
+  <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex justify-between items-center">
 
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-widest">
-            ANSH<span className="text-purple-400">.ADMIN</span>
-          </h1>
-
-          <div className="hidden md:flex items-center gap-10">
-            <div className="flex gap-6 text-sm text-gray-300">
-              <button onClick={() => scrollTo("analytics")}>Analytics</button>
-              <button onClick={() => scrollTo("about-manager")}>About</button>
-              <button onClick={() => scrollTo("add-project")}>Add Project</button>
-              <button onClick={() => scrollTo("projects")}>Projects</button>
-              <button onClick={() => scrollTo("messages")}>Messages</button>
-            </div>
-
-            <div className="flex gap-3">
-              <button onClick={() => navigate("/change-password")}
-                className="px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-400/30 flex items-center gap-2">
-                <FaKey /> Security
-              </button>
-              <button onClick={logout}
-                className="px-4 py-2 rounded-xl bg-red-500/10 border border-red-400/30 flex items-center gap-2 text-red-300">
-                <FaSignOutAlt /> Logout
-              </button>
-            </div>
-          </div>
-
-          <button onClick={() => setMenuOpen(true)} className="md:hidden text-2xl"><FaBars /></button>
-        </div>
+    {/* LOGO */}
+    <div className="flex items-center gap-3">
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center font-extrabold text-black">
+        A
       </div>
+      <h1 className="text-lg sm:text-xl font-extrabold tracking-widest">
+        ANSH<span className="text-purple-400">.ADMIN</span>
+      </h1>
+    </div>
+
+    {/* DESKTOP MENU */}
+    <div className="hidden md:flex items-center gap-10">
+
+      {/* NAV LINKS */}
+      <div className="flex gap-6 text-sm text-gray-300">
+        {[
+          ["analytics", "Analytics"],
+          ["about-manager", "About"],
+          ["add-project", "Add Project"],
+          ["projects", "Projects"],
+          ["messages", "Messages"],
+        ].map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() => scrollTo(id)}
+            className="relative group transition hover:text-white"
+          >
+            {label}
+            <span
+              className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-purple-500 to-cyan-400 transition-all duration-300 group-hover:w-full"
+            />
+          </button>
+        ))}
+      </div>
+
+      {/* ACTION BUTTONS */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => navigate("/change-password")}
+          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 
+          hover:border-purple-400/40 hover:bg-white/10 transition flex items-center gap-2 text-sm"
+        >
+          <FaKey className="text-purple-400" /> Security
+        </button>
+
+        <button
+          onClick={logout}
+          className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-400/30 
+          text-red-300 hover:bg-red-500/20 transition flex items-center gap-2 text-sm"
+        >
+          <FaSignOutAlt /> Logout
+        </button>
+      </div>
+    </div>
+
+    {/* MOBILE MENU BUTTON */}
+    <button
+      onClick={() => setMenuOpen(true)}
+      className="md:hidden text-2xl text-gray-200 hover:text-white transition"
+    >
+      <FaBars />
+    </button>
+  </div>
+</div>
+
 
       {/* MOBILE MENU */}
       {menuOpen && (
@@ -251,37 +312,96 @@ export default function AdminDashboard() {
         )}
 
         {/* ABOUT MANAGER */}
-        <section id="about-manager">
-          <h2 className="text-3xl font-bold mb-10 flex items-center gap-3">
-            <FaUser className="text-cyan-400" /> About Section Manager
-          </h2>
+<section id="about-manager">
+  <h2 className="text-3xl font-bold mb-10 flex items-center gap-3">
+    <FaUser className="text-cyan-400" /> About Section Manager
+  </h2>
 
-          <div className="grid md:grid-cols-2 gap-8">
+  <div className="grid md:grid-cols-2 gap-8">
 
-            <form onSubmit={uploadAboutImage}
-              className="p-6 rounded-3xl bg-white/5 border border-white/10">
-              <h3 className="mb-4 font-semibold">Update About Image</h3>
-              {aboutData?.image && (
-                <img src={aboutData.image} className="w-full h-52 object-cover rounded-xl mb-4" />
-              )}
-              <input type="file" accept="image/*" onChange={(e) => setAboutImage(e.target.files[0])} />
-              <button className="mt-4 px-6 py-2 rounded-lg bg-purple-600">Upload Image</button>
-            </form>
+    {/* IMAGE MANAGER */}
+    <form
+      onSubmit={uploadAboutImage}
+      className="p-6 rounded-2xl bg-white/5 border border-white/10 
+      backdrop-blur-xl transition hover:border-white/20 hover:-translate-y-1"
+    >
+      <h3 className="mb-4 font-semibold text-lg">Update About Image</h3>
 
-            <form onSubmit={uploadResume}
-              className="p-6 rounded-3xl bg-white/5 border border-white/10">
-              <h3 className="mb-4 font-semibold">Update Resume (PDF)</h3>
-              {aboutData?.resume && (
-                <a href={aboutData.resume} target="_blank" className="block mb-4 text-purple-400 underline">
-                  View current resume
-                </a>
-              )}
-              <input type="file" accept="application/pdf" onChange={(e) => setResume(e.target.files[0])} />
-              <button className="mt-4 px-6 py-2 rounded-lg bg-cyan-600">Upload Resume</button>
-            </form>
+      {aboutData?.image && (
+        <div className="mb-4 rounded-xl overflow-hidden border border-white/10">
+          <img
+            src={aboutData.image}
+            className="w-full h-52 object-cover"
+          />
+        </div>
+      )}
 
-          </div>
-        </section>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setAboutImage(e.target.files[0])}
+        className="block w-full text-sm text-gray-300
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-lg file:border-0
+        file:bg-white/10 file:text-gray-200
+        hover:file:bg-white/20 transition cursor-pointer"
+      />
+
+  <button
+    disabled={aboutUploading}
+    className={`mt-5 w-full py-2.5 rounded-lg font-medium transition
+    ${aboutUploading 
+      ? "bg-purple-600/40 cursor-not-allowed" 
+      : "bg-purple-600/80 hover:bg-purple-600"}`}
+  >
+    {aboutUploading ? "Updating..." : "Upload Image"}
+  </button>
+    </form>
+
+    {/* RESUME MANAGER */}
+    <form
+      onSubmit={uploadResume}
+      className="p-6 rounded-2xl bg-white/5 border border-white/10 
+      backdrop-blur-xl transition hover:border-white/20 hover:-translate-y-1"
+    >
+      <h3 className="mb-4 font-semibold text-lg">Update Resume (PDF)</h3>
+
+      {aboutData?.resume && (
+        <a
+          href={aboutData.resume}
+          target="_blank"
+          className="block mb-4 text-sm text-cyan-400 hover:text-cyan-300 transition"
+        >
+          View current resume
+        </a>
+      )}
+
+      <input
+        type="file"
+        accept="application/pdf"
+        onChange={(e) => setResume(e.target.files[0])}
+        className="block w-full text-sm text-gray-300
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-lg file:border-0
+        file:bg-white/10 file:text-gray-200
+        hover:file:bg-white/20 transition cursor-pointer"
+      />
+
+  <button
+    disabled={resumeUploading}
+    className={`mt-5 w-full py-2.5 rounded-lg font-medium transition
+    ${resumeUploading 
+      ? "bg-cyan-600/40 cursor-not-allowed" 
+      : "bg-cyan-600/80 hover:bg-cyan-600"}`}
+  >
+    {resumeUploading ? "Updating..." : "Upload Resume"}
+  </button>
+
+    </form>
+
+  </div>
+</section>
+
 
         {/* ADD PROJECT */}
         <section id="add-project">
@@ -304,7 +424,15 @@ export default function AdminDashboard() {
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="p-3 rounded-xl bg-black/40 border border-white/10 md:col-span-2" />
 
-            <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+            <input type="file" 
+            onChange={(e) => 
+            setImage(e.target.files[0])}         
+            className="block w-full text-sm text-gray-300
+             file:mr-4 file:py-2 file:px-4
+             file:rounded-lg file:border-0
+             file:bg-white/10 file:text-gray-200
+             hover:file:bg-white/20 transition cursor-pointer" 
+            />
 
             <button disabled={uploading}
               className="md:col-span-2 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500">
